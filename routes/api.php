@@ -14,19 +14,28 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['cors', 'json.response', 'auth:api'])->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::group(['middleware' => ['cors', 'json.response']], function () {
 
     // public routes
     Route::post('/login', 'Auth\ApiAuthController@login')->name('login.api');
     Route::post('/register','Auth\ApiAuthController@register')->name('register.api');
-    Route::post('/logout', 'Auth\ApiAuthController@logout')->name('logout.api');
+    
 });
 
 Route::middleware('auth:api')->group(function () {
-    Route::get('/articles', 'ArticleController@index')->middleware('api.admin')->name('articles');
+    Route::post('/logout', 'Auth\ApiAuthController@logout')->name('logout.api');
+    Route::get('/get_records', 'API\ManageIncomeController@getRecords');
+    Route::post('/add_record', 'API\ManageIncomeController@add');
+
+    Route::get('/get_income_total', 'API\ManageIncomeController@getTotal');
+    Route::get('/get_incomes', 'API\SaveIncomeController@index');
+    Route::get('/get_income_info', 'API\SaveIncomeController@incomInfo');
+    Route::post('/save_income', 'API\SaveIncomeController@create');
+    Route::post('/save_wish_item', 'API\WishListController@create');
+    Route::get('/get_wish_items', 'API\WishListController@index');
+    Route::get('/get_wish_items_uncomplete', 'API\WishListController@uncomplete');
+    Route::put('/update_wish_item', 'API\WishListController@update');
+    Route::delete('/delete_wish_item/{id}', 'API\WishListController@delete');
+    Route::get('/articles', 'ArticleController@index')->name('articles');
 });
 
